@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Deep matte black, soft chrome silver, restrained red accent */
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --card: #111114;
+  --card-foreground: #f4f4f5;
+  --popover: #111114;
+  --popover-foreground: #f4f4f5;
+  --primary: #c8102e;
+  --primary-foreground: #ffffff;
+  --secondary: #18181b;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #c8102e;
+  --accent-foreground: #ffffff;
+  --destructive: #c8102e;
+  --destructive-foreground: #ffffff;
+  --border: #27272a;
+  --input: #18181b;
+  --ring: #c8102e;
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --card: #111114;
+  --card-foreground: #f4f4f5;
+  --popover: #111114;
+  --popover-foreground: #f4f4f5;
+  --primary: #c8102e;
+  --primary-foreground: #ffffff;
+  --secondary: #18181b;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #c8102e;
+  --accent-foreground: #ffffff;
+  --destructive: #c8102e;
+  --destructive-foreground: #ffffff;
+  --border: #27272a;
+  --input: #18181b;
+  --ring: #c8102e;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  html,
+  body {
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+      url('/images/background-car.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply text-foreground;
+    font-feature-settings: "ss01", "cv11";
+    background-color: transparent;
+  }
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.005em;
+  }
+  .text-chrome {
+    background: linear-gradient(180deg, #fafafa 0%, #d4d4d8 48%, #a1a1aa 56%, #f4f4f5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Italic glyphs lean past their box and get clipped by background-clip:text.
+       inline-block + extra right padding + clone keeps the slant visible. */
+    display: inline-block;
+    padding-right: 0.18em;
+    padding-left: 0.02em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .hairline-x {
+    background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+  }
+  .red-rule {
+    background-image: linear-gradient(90deg, transparent, #c8102e 30%, #c8102e 70%, transparent);
+  }
+  .text-stroke-chrome {
+    -webkit-text-stroke: 1px rgba(244, 244, 245, 0.18);
+    color: transparent;
+  }
+  .bg-honeycomb {
+    background-color: #0a0a0b;
+    background-image:
+      radial-gradient(circle at center, rgba(244, 244, 245, 0.04) 1px, transparent 1.5px),
+      linear-gradient(180deg, rgba(200, 16, 46, 0.06), transparent 60%);
+    background-size: 22px 22px, auto;
+  }
+}
