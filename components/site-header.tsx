@@ -45,12 +45,12 @@ export function SiteHeader() {
       )}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="MacBros Detailing home">
+        <Link href="/" aria-label="MacBros Detailing home" className="flex h-full items-center">
           <BrandLogo
             width={420}
             height={116}
             priority
-            className="h-14 w-auto object-contain md:h-16"
+            className="h-14 w-auto translate-y-0.5 object-contain md:h-16"
           />
         </Link>
 

@@ -19,7 +19,7 @@ export function BrandLogo({
         width={width}
         height={height}
         priority={priority}
-        className="h-auto w-auto select-none"
+        className="block h-auto w-auto select-none"
         style={{ maxHeight: height }}
       />
     </span>
