@@ -113,7 +113,7 @@ export default function HomePage() {
 
           <div className="mt-10 grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
             {processSteps.map((step) => (
-              <div key={step.step} className="bg-black/40 p-6 backdrop-blur-sm md:p-8">
+              <div key={step.step} className="bg-black/75 p-6 backdrop-blur-sm md:p-8">
                 <span className="font-display text-4xl font-bold italic text-stroke-chrome md:text-5xl">
                   {step.step}
                 </span>
@@ -135,7 +135,7 @@ export default function HomePage() {
             {credibilityPoints.map((point) => (
               <div
                 key={point.title}
-                className="border border-border/50 bg-black/40 p-6 transition-colors hover:border-primary/50 backdrop-blur-sm md:p-7"
+                className="border border-border/50 bg-black/75 p-6 transition-colors hover:border-primary/50 backdrop-blur-sm md:p-7"
               >
                 <span className="block h-px w-10 bg-primary" aria-hidden />
                 <h3 className="mt-5 font-display text-base font-bold uppercase italic tracking-tight text-foreground">
@@ -166,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border border-border/50 bg-black/40 p-6 backdrop-blur-sm md:p-8">
+          <div className="border border-border/50 bg-black/75 p-6 backdrop-blur-sm md:p-8">
             <h2 className="font-display text-2xl font-bold uppercase italic tracking-tight text-chrome md:text-3xl">
               Questions?
             </h2>
@@ -198,7 +198,7 @@ export default function HomePage() {
 
           <div className="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-3">
             {faqItems.map((item) => (
-              <div key={item.title} className="border border-border/50 bg-black/40 p-6 backdrop-blur-sm md:p-7">
+              <div key={item.title} className="border border-border/50 bg-black/75 p-6 backdrop-blur-sm md:p-7">
                 <h3 className="font-display text-lg font-bold uppercase italic tracking-tight text-foreground">
                   {item.title}
                 </h3>

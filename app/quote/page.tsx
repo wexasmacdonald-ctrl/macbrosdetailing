@@ -31,7 +31,7 @@ export default function QuotePage() {
               </p>
             </div>
 
-            <div className="border-l-2 border-primary/60 bg-black/40 backdrop-blur-sm px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+            <div className="border-l-2 border-primary/60 bg-black/75 backdrop-blur-sm px-4 py-3 text-sm leading-relaxed text-muted-foreground">
               Access to water and electricity may be needed depending on the job.
             </div>
 
