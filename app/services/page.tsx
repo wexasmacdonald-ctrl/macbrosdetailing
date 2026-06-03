@@ -94,7 +94,7 @@ function ServiceCard({ service }: { service: Service }) {
   return (
     <article
       id={service.id}
-      className={`scroll-mt-24 border border-border/50 bg-black/75 p-5 backdrop-blur-sm transition-colors hover:border-primary/50 md:p-7 ${
+      className={`scroll-mt-24 border border-border/50 bg-card/85 p-5 backdrop-blur-sm transition-colors hover:border-primary/50 md:p-7 ${
         service.fullWidth ? "lg:col-span-2" : ""
       }`}
     >
@@ -125,7 +125,7 @@ function ServiceCard({ service }: { service: Service }) {
       )}
 
       {service.note && (
-        <p className="mt-5 border-l-2 border-primary/60 bg-black/65 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-5 border-l-2 border-primary/60 bg-secondary/80 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
           {service.note}
         </p>
       )}
@@ -153,7 +153,7 @@ export default function ServicesPage() {
                 a quote request and we&apos;ll review it.
               </p>
             </div>
-            <div className="flex items-start gap-3 border border-border/50 bg-black/75 p-5 backdrop-blur-sm">
+            <div className="flex items-start gap-3 border border-border/50 bg-card/85 p-5 backdrop-blur-sm">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-border">
                 <Droplets className="h-5 w-5 text-primary" />
               </div>

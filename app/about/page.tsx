@@ -90,7 +90,7 @@ export default function AboutPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-px bg-border md:grid-cols-2">
             {values.map((value) => (
-              <div key={value.title} className="bg-black/75 backdrop-blur-sm p-5 md:p-7">
+              <div key={value.title} className="bg-card/85 backdrop-blur-sm p-5 md:p-7">
                 <div className="flex h-11 w-11 items-center justify-center border border-border">
                   <value.icon size={20} className="text-primary" />
                 </div>

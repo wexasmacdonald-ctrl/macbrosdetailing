@@ -5,7 +5,7 @@ import { BUSINESS_LEGAL_NAME, BUSINESS_NAME, CONTACT_EMAIL, SERVICE_AREA } from 
 
 export function SiteFooter() {
   return (
-    <footer className="relative border-t border-border/50 bg-black/90 backdrop-blur-sm">
+    <footer className="relative border-t border-border/50 bg-background/95 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md">
@@ -28,7 +28,7 @@ export function SiteFooter() {
             </a>
           </div>
 
-          <div className="max-w-sm border border-border/50 bg-black/75 p-5">
+          <div className="max-w-sm border border-border/50 bg-card/85 p-5">
             <h3 className="font-display text-xs font-semibold uppercase tracking-[0.25em] text-foreground">
               Need A Quote?
             </h3>

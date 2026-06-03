@@ -42,7 +42,7 @@ export default function ContactPage() {
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{SERVICE_AREA}.</p>
             </div>
 
-            <div className="border-l-2 border-primary/60 bg-black/75 backdrop-blur-sm px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+            <div className="border-l-2 border-primary/60 bg-card/85 backdrop-blur-sm px-4 py-3 text-sm leading-relaxed text-muted-foreground">
               Need a vehicle quote? Use the{" "}
               <Link href="/quote" className="text-foreground underline-offset-2 hover:underline">
                 Quote page

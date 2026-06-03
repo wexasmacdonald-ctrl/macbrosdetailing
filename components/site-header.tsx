@@ -40,7 +40,7 @@ export function SiteHeader() {
       className={cn(
         "sticky top-0 z-50 w-full border-b transition-colors",
         scrolled
-          ? "border-border/50 bg-black/90 backdrop-blur-md"
+          ? "border-border/60 bg-background/92 backdrop-blur-md"
           : "border-transparent bg-transparent",
       )}
     >
@@ -103,7 +103,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-border/50 bg-black/90 backdrop-blur-md md:hidden">
+        <div className="border-t border-border/50 bg-background/95 backdrop-blur-md md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-4 py-3 sm:px-6" aria-label="Mobile">
             {NAV.map((item) => (
               <Link
