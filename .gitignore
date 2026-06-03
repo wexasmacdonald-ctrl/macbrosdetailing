@@ -15,3 +15,5 @@ node_modules
 *.tsbuildinfo
 *.log
 .DS_Store
+
+.vercel

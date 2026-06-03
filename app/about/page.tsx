@@ -26,7 +26,7 @@ const values = [
   {
     icon: Truck,
     title: "Mobile Convenience",
-    description: `We come to you across ${SERVICE_AREA.toLowerCase()}, so you do not have to rearrange your day.`,
+    description: `We come to you across ${SERVICE_AREA}, so you do not have to rearrange your day.`,
   },
   {
     icon: FileText,
@@ -42,7 +42,7 @@ export default function AboutPage() {
         eyebrow="About"
         title="Local."
         accent="Family-Owned."
-        description={`A mobile detailing service in ${SERVICE_AREA.toLowerCase()}.`}
+        description={`A mobile detailing service in ${SERVICE_AREA}.`}
       />
 
       <section className="py-16 md:py-20">
@@ -51,7 +51,7 @@ export default function AboutPage() {
           <div className="mt-6 space-y-5 leading-relaxed text-muted-foreground">
             <p>
               MacBros Detailing is a local, family-owned mobile detailing service serving{" "}
-              {SERVICE_AREA.toLowerCase()}. We focus on careful work, clear communication, and
+              {SERVICE_AREA}. We focus on careful work, clear communication, and
               making the detailing process simple for our customers.
             </p>
             <p>

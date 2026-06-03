@@ -17,7 +17,7 @@ export function SiteFooter() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Mobile detailing in {SERVICE_AREA.toLowerCase()}.
+              Mobile detailing in {SERVICE_AREA}.
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}

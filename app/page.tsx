@@ -34,7 +34,7 @@ const credibilityPoints = [
   },
   {
     title: "Ottawa Area",
-    desc: `Serving ${SERVICE_AREA.toLowerCase()}.`,
+    desc: `Serving ${SERVICE_AREA}.`,
   },
   {
     title: "Clear Communication",
@@ -85,7 +85,7 @@ export default function HomePage() {
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty md:text-lg">
             MacBros Detailing is a local, family-owned mobile detailing service serving{" "}
-            {SERVICE_AREA.toLowerCase()}. Send us your vehicle details and we&apos;ll get back to
+            {SERVICE_AREA}. Send us your vehicle details and we&apos;ll get back to
             you with a quote.
           </p>
 

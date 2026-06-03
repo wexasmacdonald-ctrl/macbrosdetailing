@@ -140,7 +140,7 @@ export default function ServicesPage() {
         eyebrow="Services"
         title="Detailing"
         accent="Packages"
-        description={`Mobile detailing for cars, SUVs, trucks, vans, boats, and trailers across ${SERVICE_AREA.toLowerCase()}.`}
+        description={`Mobile detailing for cars, SUVs, trucks, vans, boats, and trailers across ${SERVICE_AREA}.`}
       />
 
       <section className="py-16 md:py-20">
