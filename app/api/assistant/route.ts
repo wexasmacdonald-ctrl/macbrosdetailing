@@ -117,7 +117,32 @@ function normalizePayload(value: unknown): AssistantPayload {
     return fallbackAssistant([{ role: "user", content: "" }])
   }
 
-  return parsed.data
+  return withDefaults(parsed.data)
+}
+
+function sanitizeReply(reply: string) {
+  return reply
+    .replace(/stain and odor removal/gi, "stain and odor treatment")
+    .replace(/remove smoke odors/gi, "help reduce smoke odors")
+    .replace(/smoke odors with our interior detailing and ozone treatments/gi, "smoke odor with interior detailing")
+    .replace(/guarantee/gi, "promise")
+}
+
+function withDefaults(payload: AssistantPayload): AssistantPayload {
+  const quickReplies =
+    payload.quickReplies.length > 0
+      ? payload.quickReplies.slice(0, 4)
+      : payload.intent === "callback"
+        ? ["Request callback", "Call now", "Ask a question"]
+        : payload.intent === "quote"
+          ? ["Interior deep clean", "Exterior package", "Send quote", "Call now"]
+          : ["Start quote", "Request callback", "Call now"]
+
+  return {
+    ...payload,
+    reply: sanitizeReply(payload.reply),
+    quickReplies,
+  }
 }
 
 function extractOpenAIText(payload: { output_text?: unknown; output?: unknown }) {
@@ -191,9 +216,16 @@ Business facts:
 - Service area: ${SERVICE_AREA}.
 - Phone: ${CONTACT_PHONE}.
 - Email: ${CONTACT_EMAIL}.
-- Services: ${SERVICE_TYPES.join(", ")}, headlight rejuvenation, and case-by-case detailing requests for cars, SUVs, pickup trucks, work trucks, vans, boats, trailers, and other vehicles.
+- Services:
+  1. Interior Standard Package: basic upkeep, vacuuming, dashboard/console/door panels wiped, cupholders/touch points cleaned, seats/floor mats cleaned, interior windows, trunk vacuum if requested.
+  2. Interior Premium / Deep Clean Package: fuller interior reset, detailed surface cleaning, seats cleaned thoroughly, carpets/floor mats cleaned, door panels/touch points, dashboard/console/trim, interior windows, trunk if requested.
+  3. Exterior Package: hand wash, exterior windows, wax/sealant, visible tire shine.
+  4. Headlight Rejuvenation Add-On: de-yellowing/headlight clarity improvement; results depend on age/condition.
+  5. Other requests: case-by-case for cars, SUVs, pickup trucks, work trucks, vans, boats, trailers, and other vehicles.
 - Pricing is quote-based and depends on vehicle condition, size, requested work, location, and photos/details. Do not invent prices or estimates.
 - Do not mention or request a storefront address. This is a mobile/service-area business.
+- Do not promise perfect stain removal, salt removal, odor removal, smoke removal, scratch removal, or restoration. Say MacBros can assess, clean, treat, improve, or quote it based on condition.
+- Do not mention ozone, ceramic coating, paint correction, engine bay, wheel removal, or services not listed above unless the user asks and you explain it is case-by-case.
 - For quote requests, collect: name, phone, email, year, make, model, vehicle type, area/region, and requested work/details.
 - For callbacks, collect: name, phone, email, and preferred callback time.
 - Photos help quote accuracy, but the assistant cannot upload photos in chat. Tell users they can submit photos on the full Quote page if needed.
@@ -201,7 +233,16 @@ Business facts:
 Your job:
 - Be concise, helpful, and direct.
 - Ask one or two practical questions at a time.
-- Help users choose the right package, explain what MacBros needs, or collect details.
+- First help the customer diagnose what they need, then close toward a quote or call.
+- When the user describes problems, reflect them back and recommend the likely package:
+  - salt, pet hair, spills, heavy dirt, seats/carpets -> Interior Premium / Deep Clean.
+  - basic dust/vacuum/wipe-down -> Interior Standard.
+  - outside wash/wax/shine -> Exterior Package.
+  - cloudy/yellow headlights -> Headlight Rejuvenation Add-On.
+- Make the customer feel understood by explaining why that package fits their situation.
+- Use soft closing language: "That sounds like a good fit for..." and "I can collect the details so MacBros can quote it properly."
+- Do not ask for contact info first unless the user specifically asks for a callback. Ask vehicle/condition questions first, then contact info after the service need is clear.
+- Always provide 2-4 quickReplies that reduce friction. Examples: "Interior Premium", "Exterior Package", "Request callback", "Call now", "Send quote".
 - When enough fields are collected, set readyForQuote or readyForCallback to true.
 - Return only valid JSON with keys: reply, intent, quickReplies, collected, readyForQuote, readyForCallback.
 `
