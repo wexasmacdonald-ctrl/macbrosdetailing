@@ -22,6 +22,23 @@ export default function ContactPage() {
       <section className="py-16 md:py-20">
         <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.4fr] lg:gap-16 lg:px-8">
           <aside className="space-y-8">
+            <div className="border border-primary/40 bg-primary/10 p-5">
+              <h2 className="font-display text-xl font-bold uppercase italic tracking-tight text-chrome md:text-2xl">
+                Prefer To Talk?
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Call directly for general questions or to discuss your vehicle before submitting a
+                quote request.
+              </p>
+              <a
+                href={`tel:${CONTACT_PHONE_HREF}`}
+                className="mt-5 inline-flex items-center gap-2 bg-primary px-5 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Phone className="h-4 w-4" />
+                Call Now {CONTACT_PHONE}
+              </a>
+            </div>
+
             <div>
               <h2 className="font-display text-xl font-bold uppercase italic tracking-tight text-chrome md:text-2xl">
                 Email

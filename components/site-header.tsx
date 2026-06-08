@@ -3,8 +3,9 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Menu, X } from "lucide-react"
+import { Menu, Phone, X } from "lucide-react"
 import { BrandLogo } from "@/components/brand-logo"
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const NAV = [
@@ -89,6 +90,14 @@ export function SiteHeader() {
               aria-hidden
             />
           </Link>
+
+          <a
+            href={`tel:${CONTACT_PHONE_HREF}`}
+            className="ml-3 inline-flex items-center gap-2 border border-primary/70 bg-primary px-4 py-2.5 font-display text-xs font-semibold uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <Phone className="h-4 w-4" />
+            Call Now
+          </a>
         </nav>
 
         <button
@@ -126,6 +135,13 @@ export function SiteHeader() {
             >
               Quote
             </Link>
+            <a
+              href={`tel:${CONTACT_PHONE_HREF}`}
+              className="mt-4 inline-flex items-center justify-center gap-2 bg-primary px-5 py-3.5 font-display text-sm font-semibold uppercase tracking-widest text-primary-foreground"
+            >
+              <Phone className="h-4 w-4" />
+              Call Now {CONTACT_PHONE}
+            </a>
           </nav>
         </div>
       )}

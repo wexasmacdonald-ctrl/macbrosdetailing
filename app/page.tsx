@@ -1,7 +1,7 @@
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Phone } from "lucide-react"
 import { SectionHeading } from "@/components/section-heading"
-import { CONTACT_EMAIL, SERVICE_AREA } from "@/lib/site"
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_HREF, SERVICE_AREA } from "@/lib/site"
 
 const processSteps = [
   {
@@ -97,6 +97,13 @@ export default function HomePage() {
               Get My Quote
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
+            <a
+              href={`tel:${CONTACT_PHONE_HREF}`}
+              className="inline-flex items-center gap-2 border border-border bg-card/90 px-7 py-3.5 font-display text-sm font-semibold uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              <Phone className="h-4 w-4 text-primary" />
+              Call Now
+            </a>
             <Link
               href="/services"
               className="font-display text-sm font-semibold uppercase tracking-widest text-foreground/80 underline underline-offset-4 transition-colors hover:text-foreground"
@@ -180,10 +187,17 @@ export default function HomePage() {
               </a>
               .
             </p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-4">
+              <a
+                href={`tel:${CONTACT_PHONE_HREF}`}
+                className="inline-flex items-center gap-2 bg-primary px-5 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Phone className="h-4 w-4" />
+                Call {CONTACT_PHONE}
+              </a>
               <Link
                 href="/contact"
-                className="font-display text-sm font-semibold uppercase tracking-widest text-foreground/80 underline underline-offset-4 transition-colors hover:text-foreground"
+                className="inline-flex items-center font-display text-sm font-semibold uppercase tracking-widest text-foreground/80 underline underline-offset-4 transition-colors hover:text-foreground"
               >
                 Go To Contact Page
               </Link>
