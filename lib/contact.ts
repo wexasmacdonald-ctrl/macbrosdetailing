@@ -15,6 +15,13 @@ type MailPayload = {
   attachments?: MailAttachment[]
 }
 
+type CustomerMailPayload = {
+  to: string
+  subject: string
+  text: string
+  html: string
+}
+
 let transporter: nodemailer.Transporter | null = null
 
 function getRequiredEnv(name: string) {
@@ -67,6 +74,19 @@ export async function sendContactEmail(payload: MailPayload) {
     text: payload.text,
     html: payload.html,
     attachments: payload.attachments,
+  })
+}
+
+export async function sendCustomerEmail(payload: CustomerMailPayload) {
+  const from = getRequiredEnv("SMTP_FROM")
+
+  await getTransporter().sendMail({
+    from,
+    to: payload.to,
+    replyTo: CONTACT_EMAIL,
+    subject: payload.subject,
+    text: payload.text,
+    html: payload.html,
   })
 }
 

@@ -1,6 +1,8 @@
 export const BUSINESS_NAME = "MacBros Detailing"
 export const BUSINESS_LEGAL_NAME = "MacBros Property Services"
 export const CONTACT_EMAIL = "info@macbrosdetailing.com"
+export const CONTACT_PHONE = "819-576-7856"
+export const CONTACT_PHONE_HREF = "+18195767856"
 export const SERVICE_AREA = "Ottawa and the surrounding area"
 export const SITE_DESCRIPTION =
   "MacBros Detailing is a local, family-owned mobile detailing service serving Ottawa and the surrounding area."

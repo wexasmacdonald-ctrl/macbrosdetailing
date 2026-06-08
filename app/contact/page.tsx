@@ -1,8 +1,8 @@
 import Link from "next/link"
-import { Mail } from "lucide-react"
+import { Mail, Phone } from "lucide-react"
 import { PageHero } from "@/components/page-hero"
 import { CallbackForm } from "@/components/callback-form"
-import { CONTACT_EMAIL, SERVICE_AREA } from "@/lib/site"
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_HREF, SERVICE_AREA } from "@/lib/site"
 
 export const metadata = {
   title: "Contact",
@@ -32,6 +32,19 @@ export default function ContactPage() {
               >
                 <Mail className="h-4 w-4 text-primary" />
                 {CONTACT_EMAIL}
+              </a>
+            </div>
+
+            <div>
+              <h2 className="font-display text-xl font-bold uppercase italic tracking-tight text-chrome md:text-2xl">
+                Phone
+              </h2>
+              <a
+                href={`tel:${CONTACT_PHONE_HREF}`}
+                className="mt-3 inline-flex items-center gap-2 text-sm text-foreground transition-colors hover:text-primary"
+              >
+                <Phone className="h-4 w-4 text-primary" />
+                {CONTACT_PHONE}
               </a>
             </div>
 

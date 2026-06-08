@@ -14,13 +14,12 @@ export function BrandLogo({
   return (
     <span className={`inline-flex items-center ${className}`}>
       <Image
-        src="/images/macbros-logo.png"
+        src="/images/macbros-logo-header.png"
         alt="MacBros Detailing"
         width={width}
         height={height}
         priority={priority}
-        className="block h-auto w-auto select-none"
-        style={{ maxHeight: height }}
+        className="block h-auto max-h-full w-auto select-none"
       />
     </span>
   )

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/next"
 import { Inter, Oswald } from "next/font/google"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -6,6 +7,7 @@ import {
   BUSINESS_LEGAL_NAME,
   BUSINESS_NAME,
   CONTACT_EMAIL,
+  CONTACT_PHONE_HREF,
   SERVICE_AREA,
   SITE_DESCRIPTION,
   SITE_URL,
@@ -51,11 +53,11 @@ export const metadata: Metadata = {
   publisher: BUSINESS_NAME,
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
       { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
-    shortcut: [{ url: "/favicon.ico", sizes: "32x32", type: "image/png" }],
+    shortcut: [{ url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" }],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
@@ -80,6 +82,7 @@ const jsonLd = {
   legalName: BUSINESS_LEGAL_NAME,
   description: SITE_DESCRIPTION,
   email: CONTACT_EMAIL,
+  telephone: CONTACT_PHONE_HREF,
   url: siteUrl,
   areaServed: SERVICE_AREA,
   image: `${siteUrl}/images/macbros-icon-source.png`,
@@ -110,6 +113,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </div>
+        <Analytics />
       </body>
     </html>
   )

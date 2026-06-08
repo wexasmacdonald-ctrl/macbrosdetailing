@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { escapeHtml, sendContactEmail } from "@/lib/contact"
+import { escapeHtml, sendContactEmail, sendCustomerEmail } from "@/lib/contact"
 import { checkRateLimit } from "@/lib/rate-limit"
+import { BUSINESS_NAME, CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/site"
 
 export const runtime = "nodejs"
 
@@ -59,6 +60,8 @@ function fileValidationError() {
 }
 
 export async function POST(request: Request) {
+  const start = Date.now()
+
   if (!checkRateLimit(`quote:${getClientKey(request)}`, 5, 10 * 60 * 1000)) {
     return NextResponse.json(
       { error: "Too many requests. Please wait a few minutes and try again." },
@@ -154,17 +157,79 @@ export async function POST(request: Request) {
       <p><strong>Requested work:</strong><br />${escapeHtml(details).replaceAll("\n", "<br />")}</p>
     `
 
-    await sendContactEmail({
-      subject: `Quote request from ${name} for ${year} ${make} ${model}`,
-      replyTo: email,
-      text,
-      html,
-      attachments,
-    })
+    const customerText = [
+      `Thanks for contacting ${BUSINESS_NAME}.`,
+      "",
+      "We received your quote request and will review the details before replying with next steps.",
+      "Pricing depends on the vehicle condition, requested work, location, and any photos/details provided.",
+      "",
+      "Your request:",
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      `Email: ${email}`,
+      `Vehicle: ${year} ${make} ${model}`,
+      `Vehicle type: ${vehicleType}`,
+      `Area: ${area}`,
+      `Photos attached: ${attachments.length}`,
+      "",
+      "Requested work:",
+      details,
+      "",
+      `Questions? Reply to this email or contact us at ${CONTACT_EMAIL} / ${CONTACT_PHONE}.`,
+    ].join("\n")
+
+    const customerHtml = `
+      <h1>Quote request received</h1>
+      <p>Thanks for contacting ${escapeHtml(BUSINESS_NAME)}. We received your quote request and will review the details before replying with next steps.</p>
+      <p>Pricing depends on the vehicle condition, requested work, location, and any photos/details provided.</p>
+      <h2>Your request</h2>
+      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+      <p><strong>Vehicle:</strong> ${escapeHtml(`${year} ${make} ${model}`)}</p>
+      <p><strong>Vehicle type:</strong> ${escapeHtml(vehicleType)}</p>
+      <p><strong>Area:</strong> ${escapeHtml(area)}</p>
+      <p><strong>Photos attached:</strong> ${attachments.length}</p>
+      <p><strong>Requested work:</strong><br />${escapeHtml(details).replaceAll("\n", "<br />")}</p>
+      <p>Questions? Reply to this email or contact us at ${escapeHtml(CONTACT_EMAIL)} / ${escapeHtml(CONTACT_PHONE)}.</p>
+    `
+
+    await Promise.all([
+      sendContactEmail({
+        subject: `Quote request from ${name} for ${year} ${make} ${model}`,
+        replyTo: email,
+        text,
+        html,
+        attachments,
+      }),
+      sendCustomerEmail({
+        to: email,
+        subject: `We received your ${BUSINESS_NAME} quote request`,
+        text: customerText,
+        html: customerHtml,
+      }),
+    ])
+
+    console.log(
+      JSON.stringify({
+        level: "info",
+        msg: "quote request sent",
+        route: "/api/quote",
+        ms: Date.now() - start,
+      }),
+    )
 
     return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error("Quote request failed", error)
+    console.error(
+      JSON.stringify({
+        level: "error",
+        msg: "quote request failed",
+        route: "/api/quote",
+        error: error instanceof Error ? error.message : String(error),
+        ms: Date.now() - start,
+      }),
+    )
 
     return NextResponse.json(
       {

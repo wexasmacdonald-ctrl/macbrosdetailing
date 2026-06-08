@@ -1,7 +1,14 @@
 import Link from "next/link"
-import { ArrowRight, Mail } from "lucide-react"
+import { ArrowRight, Mail, Phone } from "lucide-react"
 import { BrandLogo } from "@/components/brand-logo"
-import { BUSINESS_LEGAL_NAME, BUSINESS_NAME, CONTACT_EMAIL, SERVICE_AREA } from "@/lib/site"
+import {
+  BUSINESS_LEGAL_NAME,
+  BUSINESS_NAME,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_HREF,
+  SERVICE_AREA,
+} from "@/lib/site"
 
 export function SiteFooter() {
   return (
@@ -25,6 +32,13 @@ export function SiteFooter() {
             >
               <Mail className="h-4 w-4 text-primary" />
               {CONTACT_EMAIL}
+            </a>
+            <a
+              href={`tel:${CONTACT_PHONE_HREF}`}
+              className="mt-2 inline-flex items-center gap-2 text-sm text-foreground/90 transition-colors hover:text-primary"
+            >
+              <Phone className="h-4 w-4 text-primary" />
+              {CONTACT_PHONE}
             </a>
           </div>
 
