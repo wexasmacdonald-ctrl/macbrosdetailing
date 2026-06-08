@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Inter, Oswald } from "next/font/google"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { QuoteAssistant } from "@/components/quote-assistant"
 import {
   BUSINESS_LEGAL_NAME,
   BUSINESS_NAME,
@@ -113,6 +114,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </div>
+        <QuoteAssistant />
         <Analytics />
       </body>
     </html>
