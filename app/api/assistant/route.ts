@@ -125,6 +125,8 @@ function sanitizeReply(reply: string) {
     .replace(/stain and odor removal/gi, "stain and odor treatment")
     .replace(/remove smoke odors/gi, "help reduce smoke odors")
     .replace(/smoke odors with our interior detailing and ozone treatments/gi, "smoke odor with interior detailing")
+    .replace(/tackle salt stains/gi, "address salt staining")
+    .replace(/tackle/gi, "address")
     .replace(/guarantee/gi, "promise")
     .replace(/I[’']ll pass this along[^.]*\./gi, "")
     .replace(/you[’']ll receive a detailed quote[^.]*\./gi, "")
@@ -137,11 +139,11 @@ function sanitizeReply(reply: string) {
 function withDefaults(payload: AssistantPayload): AssistantPayload {
   let reply = sanitizeReply(payload.reply)
 
-  if (payload.readyForQuote) {
+  if (payload.readyForQuote && !/Tap Send Quote Request below/i.test(reply)) {
     reply = `${reply} I have enough details to send this to MacBros. Tap Send Quote Request below to submit it. If you want to attach photos, use the full Quote page.`
   }
 
-  if (payload.readyForCallback) {
+  if (payload.readyForCallback && !/Tap Request Callback below/i.test(reply)) {
     reply = `${reply} I have enough details to request the callback. Tap Request Callback below to submit it.`
   }
 
