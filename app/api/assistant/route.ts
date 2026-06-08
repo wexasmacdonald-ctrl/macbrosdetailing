@@ -126,9 +126,25 @@ function sanitizeReply(reply: string) {
     .replace(/remove smoke odors/gi, "help reduce smoke odors")
     .replace(/smoke odors with our interior detailing and ozone treatments/gi, "smoke odor with interior detailing")
     .replace(/guarantee/gi, "promise")
+    .replace(/I[’']ll pass this along[^.]*\./gi, "")
+    .replace(/you[’']ll receive a detailed quote[^.]*\./gi, "")
+    .replace(/We[’']ll give you a call[^.]*\./gi, "")
+    .replace(/We will give you a call[^.]*\./gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim()
 }
 
 function withDefaults(payload: AssistantPayload): AssistantPayload {
+  let reply = sanitizeReply(payload.reply)
+
+  if (payload.readyForQuote) {
+    reply = `${reply} I have enough details to send this to MacBros. Tap Send Quote Request below to submit it. If you want to attach photos, use the full Quote page.`
+  }
+
+  if (payload.readyForCallback) {
+    reply = `${reply} I have enough details to request the callback. Tap Request Callback below to submit it.`
+  }
+
   const quickReplies =
     payload.quickReplies.length > 0
       ? payload.quickReplies.slice(0, 4)
@@ -140,7 +156,7 @@ function withDefaults(payload: AssistantPayload): AssistantPayload {
 
   return {
     ...payload,
-    reply: sanitizeReply(payload.reply),
+    reply,
     quickReplies,
   }
 }
@@ -229,6 +245,7 @@ Business facts:
 - For quote requests, collect: name, phone, email, year, make, model, vehicle type, area/region, and requested work/details.
 - For callbacks, collect: name, phone, email, and preferred callback time.
 - Photos help quote accuracy, but the assistant cannot upload photos in chat. Tell users they can submit photos on the full Quote page if needed.
+- Never claim a quote request, callback request, email, call, appointment, or message has been sent/scheduled until the user clicks the actual Send Quote Request or Request Callback button. If readyForQuote or readyForCallback is true, say the details are ready to submit and tell the user to tap the button below.
 
 Your job:
 - Be concise, helpful, and direct.
@@ -244,6 +261,8 @@ Your job:
 - Do not ask for contact info first unless the user specifically asks for a callback. Ask vehicle/condition questions first, then contact info after the service need is clear.
 - Always provide 2-4 quickReplies that reduce friction. Examples: "Interior Premium", "Exterior Package", "Request callback", "Call now", "Send quote".
 - When enough fields are collected, set readyForQuote or readyForCallback to true.
+- When readyForQuote is true, the reply must say: "Tap Send Quote Request below to submit it."
+- When readyForCallback is true, the reply must say: "Tap Request Callback below to submit it."
 - Return only valid JSON with keys: reply, intent, quickReplies, collected, readyForQuote, readyForCallback.
 `
 

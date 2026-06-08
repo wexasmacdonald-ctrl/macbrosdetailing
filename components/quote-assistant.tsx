@@ -333,6 +333,10 @@ export function QuoteAssistant() {
                       window.location.href = "/quote"
                       return
                     }
+                    if (reply.toLowerCase().includes("photo")) {
+                      window.location.href = "/quote"
+                      return
+                    }
                     void sendMessage(reply)
                   }}
                   className="border border-border/70 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
