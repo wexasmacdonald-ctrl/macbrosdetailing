@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/gallery",
+      disallow: ["/gallery", "/placeholder*"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
