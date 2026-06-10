@@ -40,9 +40,27 @@ type AssistantPayload = {
   readyForCallback: boolean
 }
 
+const callbackCorrectionPattern =
+  /\b(actually|change|changed|correction|correct|different|edit|fix|mistake|new|reschedule|update|wrong)\b/i
+
 function getClientKey(request: Request) {
   const forwardedFor = request.headers.get("x-forwarded-for")
   return forwardedFor?.split(",")[0]?.trim() || "unknown"
+}
+
+function hasSubmittedCallback(messages: Array<z.infer<typeof messageSchema>>) {
+  return messages.some((message) =>
+    /callback request sent/i.test(message.content),
+  )
+}
+
+function latestAllowsCallbackCorrection(messages: Array<z.infer<typeof messageSchema>>) {
+  const latestUserMessage = messages.findLast((message) => message.role === "user")?.content ?? ""
+  return callbackCorrectionPattern.test(latestUserMessage)
+}
+
+function removeCallbackReplies(replies: string[]) {
+  return replies.filter((reply) => !reply.toLowerCase().includes("callback"))
 }
 
 function fallbackAssistant(messages: Array<z.infer<typeof messageSchema>>): AssistantPayload {
@@ -163,6 +181,23 @@ function withDefaults(payload: AssistantPayload): AssistantPayload {
   }
 }
 
+function suppressDuplicateCallbackOffer(
+  payload: AssistantPayload,
+  messages: Array<z.infer<typeof messageSchema>>,
+): AssistantPayload {
+  if (!hasSubmittedCallback(messages) || latestAllowsCallbackCorrection(messages)) {
+    return payload
+  }
+
+  return {
+    ...payload,
+    reply:
+      "Your callback request is already submitted. If any details are wrong or changed, tell me the correction and I can help with the next step.",
+    quickReplies: removeCallbackReplies(payload.quickReplies),
+    readyForCallback: false,
+  }
+}
+
 function extractOpenAIText(payload: { output_text?: unknown; output?: unknown }) {
   if (typeof payload.output_text === "string") {
     return payload.output_text
@@ -197,6 +232,7 @@ function extractOpenAIText(payload: { output_text?: unknown; output?: unknown })
 
 export async function POST(request: Request) {
   const start = Date.now()
+  let parsedMessages: Array<z.infer<typeof messageSchema>> = [{ role: "user", content: "" }]
 
   if (!checkRateLimit(`assistant:${getClientKey(request)}`, 30, 10 * 60 * 1000)) {
     return NextResponse.json(
@@ -212,11 +248,12 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Invalid assistant message." }, { status: 400 })
     }
+    parsedMessages = parsed.data.messages
 
     const apiKey = process.env.OPENAI_API_KEY?.trim()
     if (!apiKey) {
       return NextResponse.json({
-        ...fallbackAssistant(parsed.data.messages),
+        ...suppressDuplicateCallbackOffer(fallbackAssistant(parsed.data.messages), parsed.data.messages),
         mode: "fallback",
       })
     }
@@ -225,6 +262,10 @@ export async function POST(request: Request) {
     const conversation = parsed.data.messages
       .map((message) => `${message.role.toUpperCase()}: ${message.content}`)
       .join("\n")
+    const callbackGuardInstruction =
+      hasSubmittedCallback(parsed.data.messages) && !latestAllowsCallbackCorrection(parsed.data.messages)
+        ? "\n- A callback request has already been submitted in this conversation. Do not offer another callback, do not set readyForCallback true, and do not include callback quick replies unless the user says their previous callback details were wrong or changed."
+        : ""
 
     const systemPrompt = `
 You are the MacBros Detailing quote assistant for ${BUSINESS_NAME}.
@@ -248,6 +289,7 @@ Business facts:
 - For callbacks, collect: name, phone, email, and preferred callback time.
 - Photos help quote accuracy, but the assistant cannot upload photos in chat. Tell users they can submit photos on the full Quote page if needed.
 - Never claim a quote request, callback request, email, call, appointment, or message has been sent/scheduled until the user clicks the actual Send Quote Request or Request Callback button. If readyForQuote or readyForCallback is true, say the details are ready to submit and tell the user to tap the button below.
+${callbackGuardInstruction}
 
 Your job:
 - Be concise, helpful, and direct.
@@ -358,7 +400,7 @@ Your job:
       )
 
       return NextResponse.json({
-        ...fallbackAssistant(parsed.data.messages),
+        ...suppressDuplicateCallbackOffer(fallbackAssistant(parsed.data.messages), parsed.data.messages),
         mode: "fallback",
       })
     }
@@ -378,7 +420,7 @@ Your job:
     )
 
     return NextResponse.json({
-      ...normalizePayload(json),
+      ...suppressDuplicateCallbackOffer(normalizePayload(json), parsed.data.messages),
       mode: "ai",
     })
   } catch (error) {
@@ -393,7 +435,10 @@ Your job:
     )
 
     return NextResponse.json({
-      ...fallbackAssistant([{ role: "user", content: "" }]),
+      ...suppressDuplicateCallbackOffer(
+        fallbackAssistant(parsedMessages),
+        parsedMessages,
+      ),
       mode: "fallback",
     })
   }

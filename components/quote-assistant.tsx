@@ -39,6 +39,8 @@ const initialMessage: ChatMessage = {
 }
 
 const defaultQuickReplies = ["Start quote", "Request callback", "Help me choose"]
+const callbackCorrectionPattern =
+  /\b(actually|change|changed|correction|correct|different|edit|fix|mistake|new|reschedule|update|wrong)\b/i
 
 const vehicleTypes = new Set([
   "Car",
@@ -93,6 +95,10 @@ function missingCallbackFields(collected: AssistantResponse["collected"]) {
     .map(([, label]) => label)
 }
 
+function removeCallbackReplies(replies: string[]) {
+  return replies.filter((reply) => !reply.toLowerCase().includes("callback"))
+}
+
 export function QuoteAssistant() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage])
@@ -103,6 +109,7 @@ export function QuoteAssistant() {
   const [collected, setCollected] = useState<AssistantResponse["collected"]>({})
   const [readyForQuote, setReadyForQuote] = useState(false)
   const [readyForCallback, setReadyForCallback] = useState(false)
+  const [callbackSubmitted, setCallbackSubmitted] = useState(false)
   const scrollAnchorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -125,6 +132,13 @@ export function QuoteAssistant() {
     setLoading(true)
     track("assistant_message_sent")
 
+    const allowsCallbackAgain =
+      !callbackSubmitted || callbackCorrectionPattern.test(content)
+
+    if (callbackSubmitted && callbackCorrectionPattern.test(content)) {
+      setCallbackSubmitted(false)
+    }
+
     try {
       const response = await fetch("/api/assistant", {
         method: "POST",
@@ -144,10 +158,14 @@ export function QuoteAssistant() {
         ...current,
         { role: "assistant", content: assistantPayload.reply },
       ])
-      setQuickReplies(assistantPayload.quickReplies?.slice(0, 4) ?? [])
+      setQuickReplies(
+        allowsCallbackAgain
+          ? (assistantPayload.quickReplies?.slice(0, 4) ?? [])
+          : removeCallbackReplies(assistantPayload.quickReplies?.slice(0, 4) ?? []),
+      )
       setCollected((current) => ({ ...current, ...assistantPayload.collected }))
       setReadyForQuote(assistantPayload.readyForQuote)
-      setReadyForCallback(assistantPayload.readyForCallback)
+      setReadyForCallback(allowsCallbackAgain && assistantPayload.readyForCallback)
     } catch {
       setMessages((current) => [
         ...current,
@@ -157,7 +175,9 @@ export function QuoteAssistant() {
             "I can still help. Send your name, phone, email, vehicle, area, and what you need done, or call us directly.",
         },
       ])
-      setQuickReplies(["Call now", "Request callback", "Quote page"])
+      setQuickReplies(
+        callbackSubmitted ? ["Call now", "Quote page"] : ["Call now", "Request callback", "Quote page"],
+      )
     } finally {
       setLoading(false)
     }
@@ -264,6 +284,8 @@ export function QuoteAssistant() {
         },
       ])
       setReadyForCallback(false)
+      setCallbackSubmitted(true)
+      setQuickReplies(["Start quote", "Call now", "Ask a question"])
     } catch {
       setMessages((current) => [
         ...current,
