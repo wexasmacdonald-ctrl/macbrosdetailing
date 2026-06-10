@@ -298,16 +298,16 @@ export function QuoteAssistant() {
     <div className="fixed inset-x-3 bottom-3 z-50 md:inset-x-auto md:right-6 md:bottom-6">
       {open && (
         <section
-          className="mx-auto mb-3 flex h-[min(720px,76svh)] w-full max-w-[440px] animate-in flex-col overflow-hidden border border-border/80 bg-background/95 shadow-2xl shadow-black/45 backdrop-blur-xl fade-in slide-in-from-bottom-3 duration-200 md:mb-4"
+          className="mx-auto mb-3 flex h-[min(720px,76svh)] w-full max-w-[440px] animate-in flex-col overflow-hidden rounded-3xl border border-border/80 bg-background/95 shadow-2xl shadow-black/45 backdrop-blur-xl fade-in slide-in-from-bottom-3 duration-200 md:mb-4"
           aria-label="MacBros quote assistant"
         >
           <div className="h-1 bg-gradient-to-r from-primary via-red-500 to-primary" />
 
           <div className="flex items-start justify-between border-b border-border/70 bg-card/70 px-4 py-4">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center border border-primary/60 bg-primary/10 shadow-lg shadow-primary/10">
+              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary/60 bg-primary/10 shadow-lg shadow-primary/10">
                 <Bot className="h-5 w-5 text-primary" />
-                <span className="absolute -right-1 -bottom-1 h-3 w-3 border border-background bg-emerald-500" />
+                <span className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full border border-background bg-emerald-500" />
               </div>
               <div>
                 <h2 className="font-display text-base font-bold uppercase italic tracking-wide text-foreground">
@@ -321,7 +321,7 @@ export function QuoteAssistant() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:border-border hover:bg-background hover:text-foreground"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-border hover:bg-background hover:text-foreground"
               aria-label="Close quote assistant"
             >
               <X className="h-4 w-4" />
@@ -332,7 +332,7 @@ export function QuoteAssistant() {
             className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.11),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent)] px-4 py-4"
             aria-live="polite"
           >
-            <div className="border border-border/70 bg-card/80 px-4 py-3">
+            <div className="rounded-2xl border border-border/70 bg-card/80 px-4 py-3">
               <div className="flex items-start gap-3">
                 <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
@@ -356,7 +356,7 @@ export function QuoteAssistant() {
                 )}
               >
                 {message.role === "assistant" && (
-                  <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 sm:flex">
+                  <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-primary/40 bg-primary/10 sm:flex">
                     <Bot className="h-3.5 w-3.5 text-primary" />
                   </div>
                 )}
@@ -364,8 +364,8 @@ export function QuoteAssistant() {
                   className={cn(
                     "border px-4 py-3 text-sm leading-relaxed shadow-sm",
                     message.role === "assistant"
-                      ? "border-border/70 bg-card/95 text-muted-foreground"
-                      : "border-primary/45 bg-primary text-primary-foreground shadow-primary/10",
+                      ? "rounded-2xl rounded-tl-md border-border/70 bg-card/95 text-muted-foreground"
+                      : "rounded-2xl rounded-tr-md border-primary/45 bg-primary text-primary-foreground shadow-primary/10",
                   )}
                 >
                   {message.content}
@@ -375,13 +375,13 @@ export function QuoteAssistant() {
 
             {loading && (
               <div className="mr-auto flex max-w-[80%] gap-2">
-                <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 sm:flex">
+                <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-primary/40 bg-primary/10 sm:flex">
                   <Bot className="h-3.5 w-3.5 text-primary" />
                 </div>
-                <div className="flex items-center gap-1 border border-border/70 bg-card/95 px-4 py-3 text-sm text-muted-foreground">
-                  <span className="h-1.5 w-1.5 animate-pulse bg-primary" />
-                  <span className="h-1.5 w-1.5 animate-pulse bg-primary [animation-delay:120ms]" />
-                  <span className="h-1.5 w-1.5 animate-pulse bg-primary [animation-delay:240ms]" />
+                <div className="flex items-center gap-1 rounded-2xl rounded-tl-md border border-border/70 bg-card/95 px-4 py-3 text-sm text-muted-foreground">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary [animation-delay:120ms]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary [animation-delay:240ms]" />
                   <span className="ml-2">Checking the best next step</span>
                 </div>
               </div>
@@ -397,7 +397,7 @@ export function QuoteAssistant() {
                     key={reply}
                     type="button"
                     onClick={() => handleQuickReply(reply)}
-                    className="shrink-0 border border-border/80 bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-foreground"
+                    className="shrink-0 rounded-full border border-border/80 bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-foreground"
                   >
                     {reply}
                   </button>
@@ -412,7 +412,7 @@ export function QuoteAssistant() {
                     type="button"
                     disabled={submitting}
                     onClick={submitQuoteRequest}
-                    className="inline-flex items-center justify-center gap-2 bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
                     <CheckCircle2 className="h-4 w-4" />
                     Send Quote
@@ -423,7 +423,7 @@ export function QuoteAssistant() {
                     type="button"
                     disabled={submitting}
                     onClick={submitCallbackRequest}
-                    className="inline-flex items-center justify-center gap-2 bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
                     <Phone className="h-4 w-4" />
                     Request Callback
@@ -443,12 +443,12 @@ export function QuoteAssistant() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Type vehicle, area, or what you need..."
-                className="min-w-0 flex-1 border border-border bg-card px-3 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:outline-none"
+                className="min-w-0 flex-1 rounded-full border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="inline-flex h-12 w-12 shrink-0 items-center justify-center bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-45"
+                className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-45"
                 aria-label="Send assistant message"
               >
                 <Send className="h-4 w-4" />
@@ -462,7 +462,7 @@ export function QuoteAssistant() {
               </p>
               <a
                 href={`tel:${CONTACT_PHONE_HREF}`}
-                className="inline-flex items-center justify-center gap-2 border border-border px-3 py-2 font-display text-xs font-semibold uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-3 py-2 font-display text-xs font-semibold uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
               >
                 <Phone className="h-4 w-4 text-primary" />
                 Call
@@ -479,10 +479,10 @@ export function QuoteAssistant() {
             setOpen((current) => !current)
             track("assistant_toggle", { open: !open })
           }}
-          className="group flex items-center gap-3 border border-primary/50 bg-primary px-4 py-3 text-left text-primary-foreground shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-2xl md:px-5 md:py-4"
+          className="group flex items-center gap-3 rounded-full border border-primary/50 bg-primary px-4 py-3 text-left text-primary-foreground shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-2xl md:px-5 md:py-4"
           aria-expanded={open}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary-foreground/15">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15">
             <MessageSquare className="h-5 w-5" />
           </span>
           <span className="leading-none">
