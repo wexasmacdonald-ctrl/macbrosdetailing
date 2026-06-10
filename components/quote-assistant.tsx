@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { track } from "@vercel/analytics"
-import { Bot, MessageSquare, Phone, Send, X } from "lucide-react"
+import { Bot, CheckCircle2, MessageSquare, Phone, Send, Sparkles, X } from "lucide-react"
 import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
@@ -37,6 +37,8 @@ const initialMessage: ChatMessage = {
   content:
     "Need help choosing a package, requesting a quote, or booking a callback? Tell me what vehicle you have and what you need done.",
 }
+
+const defaultQuickReplies = ["Start quote", "Request callback", "Help me choose"]
 
 const vehicleTypes = new Set([
   "Car",
@@ -97,14 +99,19 @@ export function QuoteAssistant() {
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [quickReplies, setQuickReplies] = useState([
-    "Start quote",
-    "Request callback",
-    "Help me choose",
-  ])
+  const [quickReplies, setQuickReplies] = useState(defaultQuickReplies)
   const [collected, setCollected] = useState<AssistantResponse["collected"]>({})
   const [readyForQuote, setReadyForQuote] = useState(false)
   const [readyForCallback, setReadyForCallback] = useState(false)
+  const scrollAnchorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    scrollAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
+  }, [messages, loading, open])
 
   async function sendMessage(value: string) {
     const content = value.trim()
@@ -271,91 +278,144 @@ export function QuoteAssistant() {
     }
   }
 
+  function handleQuickReply(reply: string) {
+    const normalized = reply.toLowerCase()
+
+    if (normalized.includes("call now")) {
+      window.location.href = `tel:${CONTACT_PHONE_HREF}`
+      return
+    }
+
+    if (normalized.includes("quote page") || normalized.includes("photo")) {
+      window.location.href = "/quote"
+      return
+    }
+
+    void sendMessage(reply)
+  }
+
   return (
-    <div className="fixed right-4 bottom-4 z-50 md:right-6 md:bottom-6">
+    <div className="fixed inset-x-3 bottom-3 z-50 md:inset-x-auto md:right-6 md:bottom-6">
       {open && (
-        <section className="mb-4 flex max-h-[78vh] w-[calc(100vw-2rem)] max-w-md flex-col overflow-hidden border border-border/70 bg-background/95 shadow-2xl shadow-black/40 backdrop-blur-md">
-          <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
+        <section
+          className="mx-auto mb-3 flex h-[min(720px,76svh)] w-full max-w-[440px] animate-in flex-col overflow-hidden border border-border/80 bg-background/95 shadow-2xl shadow-black/45 backdrop-blur-xl fade-in slide-in-from-bottom-3 duration-200 md:mb-4"
+          aria-label="MacBros quote assistant"
+        >
+          <div className="h-1 bg-gradient-to-r from-primary via-red-500 to-primary" />
+
+          <div className="flex items-start justify-between border-b border-border/70 bg-card/70 px-4 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center border border-primary/50 bg-primary/10">
-                <Bot className="h-4 w-4 text-primary" />
+              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center border border-primary/60 bg-primary/10 shadow-lg shadow-primary/10">
+                <Bot className="h-5 w-5 text-primary" />
+                <span className="absolute -right-1 -bottom-1 h-3 w-3 border border-background bg-emerald-500" />
               </div>
               <div>
-                <h2 className="font-display text-sm font-bold uppercase italic tracking-wide text-foreground">
+                <h2 className="font-display text-base font-bold uppercase italic tracking-wide text-foreground">
                   Quote Assistant
                 </h2>
-                <p className="text-xs text-muted-foreground">MacBros Detailing</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Service guidance, quote requests, callbacks
+                </p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="inline-flex h-9 w-9 items-center justify-center text-muted-foreground hover:text-foreground"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center border border-transparent text-muted-foreground transition-colors hover:border-border hover:bg-background hover:text-foreground"
               aria-label="Close quote assistant"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          <div
+            className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.11),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent)] px-4 py-4"
+            aria-live="polite"
+          >
+            <div className="border border-border/70 bg-card/80 px-4 py-3">
+              <div className="flex items-start gap-3">
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
+                    Fastest path to a quote
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    Share your vehicle, location area, and what condition it is in. Photos can be
+                    added on the quote page if needed.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {messages.map((message, index) => (
               <div
                 key={`${message.role}-${index}`}
                 className={cn(
-                  "max-w-[88%] border px-4 py-3 text-sm leading-relaxed",
-                  message.role === "assistant"
-                    ? "border-border/70 bg-card/90 text-muted-foreground"
-                    : "ml-auto border-primary/50 bg-primary/15 text-foreground",
+                  "group flex max-w-[92%] gap-2",
+                  message.role === "assistant" ? "mr-auto" : "ml-auto flex-row-reverse",
                 )}
               >
-                {message.content}
+                {message.role === "assistant" && (
+                  <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 sm:flex">
+                    <Bot className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                )}
+                <div
+                  className={cn(
+                    "border px-4 py-3 text-sm leading-relaxed shadow-sm",
+                    message.role === "assistant"
+                      ? "border-border/70 bg-card/95 text-muted-foreground"
+                      : "border-primary/45 bg-primary text-primary-foreground shadow-primary/10",
+                  )}
+                >
+                  {message.content}
+                </div>
               </div>
             ))}
+
             {loading && (
-              <div className="max-w-[80%] border border-border/70 bg-card/90 px-4 py-3 text-sm text-muted-foreground">
-                Thinking...
+              <div className="mr-auto flex max-w-[80%] gap-2">
+                <div className="mt-1 hidden h-7 w-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 sm:flex">
+                  <Bot className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <div className="flex items-center gap-1 border border-border/70 bg-card/95 px-4 py-3 text-sm text-muted-foreground">
+                  <span className="h-1.5 w-1.5 animate-pulse bg-primary" />
+                  <span className="h-1.5 w-1.5 animate-pulse bg-primary [animation-delay:120ms]" />
+                  <span className="h-1.5 w-1.5 animate-pulse bg-primary [animation-delay:240ms]" />
+                  <span className="ml-2">Checking the best next step</span>
+                </div>
               </div>
             )}
+            <div ref={scrollAnchorRef} />
           </div>
 
-          <div className="border-t border-border/70 px-4 py-3">
-            <div className="mb-3 flex flex-wrap gap-2">
-              {quickReplies.map((reply) => (
-                <button
-                  key={reply}
-                  type="button"
-                  onClick={() => {
-                    if (reply.toLowerCase().includes("call now")) {
-                      window.location.href = `tel:${CONTACT_PHONE_HREF}`
-                      return
-                    }
-                    if (reply.toLowerCase().includes("quote page")) {
-                      window.location.href = "/quote"
-                      return
-                    }
-                    if (reply.toLowerCase().includes("photo")) {
-                      window.location.href = "/quote"
-                      return
-                    }
-                    void sendMessage(reply)
-                  }}
-                  className="border border-border/70 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
-                >
-                  {reply}
-                </button>
-              ))}
-            </div>
+          <div className="border-t border-border/70 bg-background/95 px-4 py-4">
+            {quickReplies.length > 0 && !loading && (
+              <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+                {quickReplies.map((reply) => (
+                  <button
+                    key={reply}
+                    type="button"
+                    onClick={() => handleQuickReply(reply)}
+                    className="shrink-0 border border-border/80 bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-foreground"
+                  >
+                    {reply}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {(readyForQuote || readyForCallback) && (
-              <div className="mb-3 flex flex-wrap gap-2">
+              <div className="mb-3 grid gap-2 sm:grid-cols-2">
                 {readyForQuote && (
                   <button
                     type="button"
                     disabled={submitting}
                     onClick={submitQuoteRequest}
-                    className="bg-primary px-4 py-2 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
-                    Send Quote Request
+                    <CheckCircle2 className="h-4 w-4" />
+                    Send Quote
                   </button>
                 )}
                 {readyForCallback && (
@@ -363,8 +423,9 @@ export function QuoteAssistant() {
                     type="button"
                     disabled={submitting}
                     onClick={submitCallbackRequest}
-                    className="bg-primary px-4 py-2 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 bg-primary px-4 py-3 font-display text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                   >
+                    <Phone className="h-4 w-4" />
                     Request Callback
                   </button>
                 )}
@@ -381,42 +442,61 @@ export function QuoteAssistant() {
               <input
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                placeholder="Ask about services or start a quote..."
-                className="min-w-0 flex-1 border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                placeholder="Type vehicle, area, or what you need..."
+                className="min-w-0 flex-1 border border-border bg-card px-3 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:outline-none"
               />
               <button
                 type="submit"
-                disabled={loading}
-                className="inline-flex h-10 w-10 items-center justify-center bg-primary text-primary-foreground disabled:opacity-60"
+                disabled={loading || !input.trim()}
+                className="inline-flex h-12 w-12 shrink-0 items-center justify-center bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-45"
                 aria-label="Send assistant message"
               >
                 <Send className="h-4 w-4" />
               </button>
             </form>
 
-            <a
-              href={`tel:${CONTACT_PHONE_HREF}`}
-              className="mt-3 flex items-center justify-center gap-2 border border-border px-3 py-2 font-display text-xs font-semibold uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              <Phone className="h-4 w-4 text-primary" />
-              Call Now {CONTACT_PHONE}
-            </a>
+            <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto] sm:items-center">
+              <p className="text-[11px] leading-relaxed text-muted-foreground">
+                AI helps collect details. Final recommendations and quotes are confirmed by
+                MacBros.
+              </p>
+              <a
+                href={`tel:${CONTACT_PHONE_HREF}`}
+                className="inline-flex items-center justify-center gap-2 border border-border px-3 py-2 font-display text-xs font-semibold uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
+              >
+                <Phone className="h-4 w-4 text-primary" />
+                Call
+              </a>
+            </div>
           </div>
         </section>
       )}
 
-      <button
-        type="button"
-        onClick={() => {
-          setOpen((current) => !current)
-          track("assistant_toggle", { open: !open })
-        }}
-        className="group flex items-center gap-3 bg-primary px-5 py-4 font-display text-sm font-semibold uppercase tracking-widest text-primary-foreground shadow-xl shadow-black/30 transition-colors hover:bg-primary/90"
-        aria-expanded={open}
-      >
-        <MessageSquare className="h-5 w-5" />
-        {open ? "Close" : "Quote Assistant"}
-      </button>
+      <div className="mx-auto flex max-w-[440px] justify-end md:max-w-none">
+        <button
+          type="button"
+          onClick={() => {
+            setOpen((current) => !current)
+            track("assistant_toggle", { open: !open })
+          }}
+          className="group flex items-center gap-3 border border-primary/50 bg-primary px-4 py-3 text-left text-primary-foreground shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-2xl md:px-5 md:py-4"
+          aria-expanded={open}
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary-foreground/15">
+            <MessageSquare className="h-5 w-5" />
+          </span>
+          <span className="leading-none">
+            <span className="block font-display text-xs font-semibold uppercase tracking-widest">
+              {open ? "Close" : "Quote Assistant"}
+            </span>
+            {!open && (
+              <span className="mt-1 block text-[11px] font-medium normal-case tracking-normal opacity-85">
+                Get help or request a callback
+              </span>
+            )}
+          </span>
+        </button>
+      </div>
     </div>
   )
 }
